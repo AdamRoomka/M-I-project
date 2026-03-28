@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Voxel World Generator</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <!-- ══════════ PANEL BOCZNY ══════════ -->
+    <div id="panel">
+      <div class="panel-header">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--accent)">
+          <path
+            d="M8 1L1 5v6l7 4 7-4V5L8 1zm0 1.5L14 6l-6 3.5L2 6l6-3.5zM2 7.27l5.5 3.18V13.7L2 10.5V7.27zm7.5 3.18L15 7.27V10.5l-5.5 3.2v-3.25z"
+          />
+        </svg>
+        VOXEL WORLD GENERATOR
+      </div>
+
+      <!-- SEED -->
+      <div class="section">
+        <div class="section-title">🌱 Seed</div>
+        <div class="input-row">
+          <label>Wartość seeda (tekst lub liczba)</label>
+          <input
+            type="text"
+            id="seed-input"
+            placeholder="np. minecraft123 lub losowy"
+          />
+        </div>
+        <div class="toggle-row">
+          <span>Losowy seed przy starcie</span>
+          <label class="toggle"
+            ><input type="checkbox" id="random-seed" checked />
+            <div class="toggle-track"></div
+          ></label>
+        </div>
+      </div>
+
+      <!-- TEREN -->
+      <div class="section">
+        <div class="section-title">⛰️ Teren</div>
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Rozmiar chunka</span><span id="val-chunk">8</span>
+          </div>
+          <input
+            type="range"
+            id="sl-chunk"
+            min="8"
+            max="32"
+            step="4"
+            value="12"
+          />
+        </div>
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>View radius (chunki)</span><span id="val-radius">1</span>
+          </div>
+          <input
+            type="range"
+            id="sl-radius"
+            min="1"
+            max="10"
+            step="1"
+            value="2"
+          />
+        </div>
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Max wysokość</span><span id="val-height">32</span>
+          </div>
+          <input
+            type="range"
+            id="sl-height"
+            min="8"
+            max="64"
+            step="4"
+            value="16"
+          />
+        </div>
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Skala szumu (zoom)</span><span id="val-scale">0.050</span>
+          </div>
+          <input
+            type="range"
+            id="sl-nscale"
+            min="0.01"
+            max="0.2"
+            step="0.005"
+            value="0.05"
+          />
+        </div>
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Oktawy fBm</span><span id="val-oct">5</span>
+          </div>
+          <input type="range" id="sl-oct" min="1" max="8" step="1" value="5" />
+        </div>
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Poziom morza (y)</span><span id="val-sea">6</span>
+          </div>
+          <input type="range" id="sl-sea" min="0" max="20" step="1" value="4" />
+        </div>
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Gęstość drzew (%)</span><span id="val-trees">55</span>
+          </div>
+          <input
+            type="range"
+            id="sl-trees"
+            min="0"
+            max="100"
+            step="1"
+            value="40"
+          />
+        </div>
+      </div>
+
+      <!-- BIOMY -->
+      <div class="section">
+        <div class="section-title">🌍 Biomy</div>
+        <div class="select-row">
+          <label>Tryb generowania biomów</label>
+          <select id="biome-mode">
+            <option value="auto">Auto (szum Perlina)</option>
+            <option value="plains">Tylko równiny</option>
+            <option value="mountain">Tylko góry</option>
+            <option value="desert">Tylko pustynia</option>
+            <option value="snow">Tylko śnieg</option>
+          </select>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Skala biomów</span><span id="val-bscale">0.30</span>
+          </div>
+          <input
+            type="range"
+            id="sl-bscale"
+            min="0.05"
+            max="1.0"
+            step="0.05"
+            value="0.3"
+          />
+        </div>
+        <div class="toggle-row">
+          <span>Generuj wodę</span>
+          <label class="toggle"
+            ><input type="checkbox" id="tog-water" checked />
+            <div class="toggle-track"></div
+          ></label>
+        </div>
+        <div class="toggle-row">
+          <span>Generuj drzewa</span>
+          <label class="toggle"
+            ><input type="checkbox" id="tog-trees" checked />
+            <div class="toggle-track"></div
+          ></label>
+        </div>
+        <div class="toggle-row">
+          <span>Bedrock (podłoże)</span>
+          <label class="toggle"
+            ><input type="checkbox" id="tog-bedrock" checked />
+            <div class="toggle-track"></div
+          ></label>
+        </div>
+      </div>
+
+      <!-- KOLORY BLOKÓW -->
+      <div class="section">
+        <div class="section-title">🎨 Kolory bloków</div>
+        <div class="color-grid">
+          <div class="color-item">
+            <input type="color" id="c-grass" value="#4caf50" /><span
+              >Trawa</span
+            >
+          </div>
+          <div class="color-item">
+            <input type="color" id="c-dirt" value="#8d6e63" /><span
+              >Ziemia</span
+            >
+          </div>
+          <div class="color-item">
+            <input type="color" id="c-stone" value="#9e9e9e" /><span
+              >Kamień</span
+            >
+          </div>
+          <div class="color-item">
+            <input type="color" id="c-sand" value="#fff176" /><span
+              >Piasek</span
+            >
+          </div>
+          <div class="color-item">
+            <input type="color" id="c-water" value="#29b6f6" /><span>Woda</span>
+          </div>
+          <div class="color-item">
+            <input type="color" id="c-snow" value="#ffffff" /><span>Śnieg</span>
+          </div>
+          <div class="color-item">
+            <input type="color" id="c-wood" value="#795548" /><span
+              >Drewno</span
+            >
+          </div>
+          <div class="color-item">
+            <input type="color" id="c-leaves" value="#43a047" /><span
+              >Liście</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- WIDOK -->
+      <div class="section">
+        <div class="section-title">👁️ Widok</div>
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Rozmiar voxela (px)</span><span id="val-vs">32</span>
+          </div>
+          <input type="range" id="sl-vs" min="8" max="64" step="2" value="32" />
+        </div>
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Obrót kamery (°)</span><span id="val-rot">36</span>
+          </div>
+          <input
+            type="range"
+            id="sl-rot"
+            min="0"
+            max="360"
+            step="1"
+            value="36"
+          />
+        </div>
+        <div class="slider-row">
+          <div class="slider-label">
+            <span>Zoom</span><span id="val-zoom">0.50</span>
+          </div>
+          <input
+            type="range"
+            id="sl-zoom"
+            min="0.1"
+            max="3"
+            step="0.05"
+            value="1.0"
+          />
+        </div>
+        <div class="toggle-row">
+          <span>Animacja ładowania</span>
+          <label class="toggle"
+            ><input type="checkbox" id="tog-anim" checked />
+            <div class="toggle-track"></div
+          ></label>
+        </div>
+        <div class="toggle-row">
+          <span>Ukryj przysłonięte bloki</span>
+          <label class="toggle"
+            ><input type="checkbox" id="tog-cull" checked />
+            <div class="toggle-track"></div
+          ></label>
+        </div>
+      </div>
+
+      <!-- PRZYCISKI -->
+      <div class="btn-grid">
+        <button class="btn btn-start" id="btn-start">▶ Start</button>
+        <button class="btn btn-stop" id="btn-stop" disabled>⏹ Stop</button>
+        <button class="btn btn-reset" id="btn-reset">↺ Reset</button>
+        <button class="btn btn-clear" id="btn-clear">🗑 Clear</button>
+        <button class="btn btn-regen" id="btn-regen">
+          ⚡ Generuj nowy świat
+        </button>
+      </div>
+
+      <!-- POSTĘP -->
+      <div id="progress-wrap">
+        <div id="progress-label">
+          <span id="prog-text">Gotowy</span>
+          <span id="prog-pct">0%</span>
+        </div>
+        <div id="progress-bar"><div id="progress-fill"></div></div>
+      </div>
+
+      <!-- STATYSTYKI -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-val" id="s-chunks">0</div>
+          <div class="stat-lbl">Chunki</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="s-blocks">0</div>
+          <div class="stat-lbl">Bloki</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="s-fps">-</div>
+          <div class="stat-lbl">FPS</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="s-seed">-</div>
+          <div class="stat-lbl">Seed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ CANVAS ══════════ -->
+    <div id="canvas-wrap">
+      <canvas id="c"></canvas>
+      <div id="controls-tip">
+        🖱️ Drag = obrót &nbsp;|&nbsp; Scroll = zoom<br />
+        Suwaki panelu = live update
+      </div>
+    </div>
+
+    <script src="./script/noise.js"></script>
+    <script src="./script/config.js"></script>
+    <script src="./script/generator.js"></script>
+    <script src="./script/renderer.js"></script>
+    <script src="./script/main.js"></script>
+
+  </body>
+</html>
