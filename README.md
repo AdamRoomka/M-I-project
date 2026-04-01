@@ -4,6 +4,9 @@
 2. Otwórz plik `index.html` w przeglądarce (Chrome lub Firefox).
 3. Program automatycznie startuje i generuje pierwszy świat.
 
+## Demo
+https://m1.romka.lt/
+
 ## Sterowanie
 
 - **Drag myszką** po canvasie — obrót świata
